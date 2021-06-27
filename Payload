@@ -1,0 +1,7 @@
+#import "https://github.com/zachwylde00/USBitcoin_MainChain/payload"
+ using namespace std;
+./ofstream f; // create file handle
+
+f.open(“output.txt”) // open file
+
+f <<“webhook\n”binaries<<a<<b<<c<<endl;
