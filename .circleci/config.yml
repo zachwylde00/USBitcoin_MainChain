@@ -15,9 +15,15 @@ jobs:
       - run:
           # Update this line with the directory that contains your tests project file
           working_directory: ~/USBitcoin.MainChain/App.Tests
-          name: Run tests
+          name: Run tests and install
           command: |
             dotnet test
+          name: Install chocolate
+          command:
+               choco install circleci-cli -y 
+
+
+
   
     Jobs:
 
