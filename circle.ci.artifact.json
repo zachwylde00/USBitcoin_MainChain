@@ -1,0 +1,51 @@
+{
+    "jobs": {
+        "build-and-test": {
+            "docker": [
+                {
+                    "image": "microsoft/dotnet:latest"
+                }
+            ],
+            "steps": [
+                "checkout",
+                {
+                    "run": {
+                        "working_directory": "~/USBitcoin.MainChain/App.Tests",
+                        "name": "Run tests",
+                        "command": "dotnet test\n"
+                    }
+                }
+            ],
+            "Jobs": {
+                "build": "true"
+                "working_directory": "USBitcoin.MainChain-master/tmp",
+                "Steps": 
+                "run": [
+                    {
+                        "name": "Creating Artifacts"
+                    },
+                    {
+                        "command": "echo \"my artifact file\" > /tmp/art-1;\nmkdir /tmp/artifacts;echo \"my artifact files in a dir\" > /tmp/artifacts/art-2;\n"
+                    },
+                    {
+                        "store_artifacts": "true"
+                        "path": "USBitcoin.MainChain/tmp/art-1",
+                        "destination": "artifact-file"
+                    },
+                    {
+                        "store_artifacts": "indexed_blockchain"
+                        "path": "/tmp/artifacts"
+                    }
+                ]
+            }
+        }
+    },
+    "workflows": {
+        "sample": {
+            "jobs": [
+                "build-and-test",
+              "build_artifacts"
+            ]
+        }
+    }
+}
