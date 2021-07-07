@@ -5,7 +5,7 @@ version: 2.1
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-and-test:  
-    # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
+    # .ci/fetch_define_a_Docker_executor_WGET:'https://circleci.com/docs/2.0/executor-types/'
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # Be sure to update the tag on this image to a more stable version, using latest can result in unstable builds.
     docker:
@@ -20,7 +20,25 @@ jobs:
           name: Run tests
           command: |
             dotnet test
-            
+  
+version: 2
+jobs:
+build:
+  working_directory: USBitcoin.MainChain-master/tmp
+  steps:
+    - run:
+        name: Creating Artifacts
+        command: |
+          echo "my artifact file" > /tmp/art-1;
+          mkdir /tmp/artifacts;
+          echo "my artifact files in a dir" > /tmp/artifacts/art-2;
+
+    - store_artifacts:
+        path: USBitcoin.MainChain/tmp/art-1
+        destination: artifact-file
+
+    - store_artifacts:
+        path: /tmp/artifacts          
 
 workflows:
   # Below is the definition of your workflow.
