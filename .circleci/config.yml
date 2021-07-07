@@ -18,13 +18,20 @@ jobs:
           name: Run tests and install
           command: |
             dotnet test
-          name: Install chocolate
-          command:
-               choco install circleci-cli -y 
+Jobs:
+      build:
+      Steps:
+      run:
+      - name: Install Chocolaty
+      - command: choco install circleci-cli -y 
+
+
+      
 
 
 
   
+
     Jobs:
 
      build:
