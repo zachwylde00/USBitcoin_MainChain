@@ -1,0 +1,52 @@
+steps: 
+    - uses: actions/checkout@v2 
+    - uses: actions/setup-dotnet@v1 with: dotnet-version: '3.1.x' # SDK Version to use; x will use the latest version of the 3.1 channel 
+    - run: dotnet build <USBitcoin.MainChain>
+# Preview version:
+steps: 
+    - uses: actions@checkout@v2 
+    - uses: actions/setup-dotnet@v1 with: dotnet-version: '6.0.x' include-prerelease: true 
+    - run: dotnet build <USBitcoin.MainChain>
+# Matrix Testing:
+jobs:
+  build: 
+    runs-on: ubuntu-latest strategy: matrix: dotnet: [ '2.1.x', '3.1.x', '5.0.x' ] 
+    name: Dotnet ${{ matrix.dotnet }}sample.   
+   steps: 
+     - uses: actions/checkout@v2  name: Setup dotnet 
+     - uses: actions/setup-dotnet@v1 with: dotnet-version: ${{ matrix.dotnet }}
+     - run: dotnet build <USBitcoin.MainChain>
+# Side by Side Testing: 
+
+jobs: 
+  build: 
+    runs-on: ubuntu-latest name: Dotnet Side by Side testing sample steps: 
+     - uses: actions/checkout@v2
+     - name: Setup dotnet uses: actions/setup-dotnet@v1 with: dotnet-version: '2.1.x'
+     - name: Setup dotnet uses: actions/setup-dotnet@v1 with: dotnet-version: '3.1.x' 
+     - run: dotnet build <my project>
+     - run: dotnet test <my project> 
+
+# Authentication for nuget feeds 
+
+  steps: 
+      - uses: actions/checkout@v2
+# Authenticates packages to push to GPR.  
+      - uses: actions/setup-dotnet@v1 with:dotnet-version: '3.1.x' 
+# SDK Version to use. source-url: https://nuget.pkg.github.com/<owner>/index.json env: NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}} 
+       - run: dotnet build <USBitcoin.MainChain> 
+       - name: Create the package 
+            run: dotnet pack --configuration Release <USBitcoin.MainChain>    
+       - name: Publish the package to GPR.   
+
+           run: dotnet nuget push <USBitcoin.MainChain>/bin/Release/*.nupkg 
+# Authenticates packages to push to Azure Artifacts
+         - uses: actions/setup-dotnet@v1 with: source-url: https://pkgs.dev.azure.com/<gq1981inc>/_packaging/<https://github.io/zachwylde00/USBitcoin.MainChain/feed>/nuget/v3/index.json env: NUGET_AUTH_TOKEN: ${{secrets.AZURE_DEVOPS_PAT}} 
+# Note, create a secret with this name in Settings 
+           - name: Publish the package to Azure Artifacts 
+                 run: dotnet nuget push <USBitcoin.MainChain>/bin/Release/*.nupkg 
+# Authenticates packages to push to nuget.org. 
+# It's only the way to push a package to nuget.org feed for macOS/Linux machines due to API key config store limitations.
+             - uses: actions/setup-dotnet@v1 with: dotnet-version: 3.1.x 
+             - name: Publish the package to nuget.org 
+                  run: dotnet nuget push */bin/Release/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json env: NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
